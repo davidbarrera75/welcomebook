@@ -1,0 +1,256 @@
+
+import { z } from 'zod';
+
+// WiFi Section Schema
+export const WifiSectionSchema = z.object({
+  networkName: z.string().min(1, "Por favor ingresa el nombre de la red WiFi"),
+  password: z.string().min(1, "Por favor ingresa la contraseña del WiFi"),
+  notes: z.string().optional(),
+});
+
+// Access Section Schema  
+export const AccessSectionSchema = z.object({
+  title: z.string().min(1, "Por favor ingresa un título"),
+  instructions: z.string().min(1, "Por favor ingresa las instrucciones"),
+});
+
+// Location Section Schema
+export const LocationSectionSchema = z.object({
+  address: z.string().min(1, "Por favor ingresa la dirección"),
+  instructions: z.string().optional(),
+  mapUrl: z.string().url("Por favor ingresa una URL válida").optional().or(z.literal("")),
+});
+  address: z.string().min(1, "Por favor ingresa la dirección"),
+  instructions: z.string().optional(),
+});
+
+// Host Section Schema
+export const HostSectionSchema = z.object({
+  name: z.string().min(1, "Por favor ingresa el nombre"),
+  phone: z.string().optional(),
+  email: z.string().email().optional().or(z.literal("")),
+  notes: z.string().optional(),
+});
+
+// Trash Section Schema
+export const TrashSectionSchema = z.object({
+  instructions: z.string().min(1, "Por favor ingresa las instrucciones"),
+  schedule: z.string().optional(),
+});
+
+// Maps360 Section Schema
+export const Maps360SectionSchema = z.object({
+  title: z.string().min(1, "Por favor ingresa un título"),
+  embedUrl: z.string().url("Por favor ingresa una URL válida"),
+});
+
+// Widget Section Schema
+export const WidgetSectionSchema = z.object({
+  title: z.string().min(1, "Por favor ingresa un título"),
+  htmlCode: z.string().min(1, "Por favor ingresa el código HTML del widget"),
+});
+
+// Emergency Contact Schema
+export const EmergencyContactSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, "Por favor ingresa el nombre"),
+  phone: z.string().min(1, "Por favor ingresa el teléfono"),
+});
+
+// Emergency Section Schema
+export const EmergencySectionSchema = z.object({
+  contacts: z.array(EmergencyContactSchema).min(1, "Por favor agrega al menos un contacto de emergencia"),
+});
+
+// Appliance Schema
+export const ApplianceSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, "Por favor ingresa el nombre del electrodoméstico"),
+  instructions: z.string().min(1, "Por favor ingresa las instrucciones"),
+  mediaUrls: z.array(z.string()).optional(),
+});
+
+// Appliances Section Schema
+export const AppliancesSectionSchema = z.object({
+  items: z.array(ApplianceSchema).min(1, "Por favor agrega al menos un electrodoméstico"),
+});
+
+// Place Schema
+export const PlaceSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, "Por favor ingresa el nombre del lugar"),
+  category: z.string().min(1, "Por favor selecciona una categoría"),
+  address: z.string().optional(),
+  notes: z.string().optional(),
+  mediaUrls: z.array(z.string()).optional(),
+});
+
+// Places Section Schema
+export const PlacesSectionSchema = z.object({
+  places: z.array(PlaceSchema).min(1, "Por favor agrega al menos un lugar de interés"),
+});
+
+// Custom Section Schema
+export const CustomSectionSchema = z.object({
+  title: z.string().min(1, "Por favor ingresa un título"),
+  content: z.string().min(1, "No olvides llenar el campo de contenido antes de guardar"),
+});
+
+// Union type for all section data
+export type WifiSectionData = z.infer<typeof WifiSectionSchema>;
+export type AccessSectionData = z.infer<typeof AccessSectionSchema>;
+export type LocationSectionData = z.infer<typeof LocationSectionSchema>;
+export type HostSectionData = z.infer<typeof HostSectionSchema>;
+export type TrashSectionData = z.infer<typeof TrashSectionSchema>;
+export type Maps360SectionData = z.infer<typeof Maps360SectionSchema>;
+export type WidgetSectionData = z.infer<typeof WidgetSectionSchema>;
+export type EmergencySectionData = z.infer<typeof EmergencySectionSchema>;
+export type AppliancesSectionData = z.infer<typeof AppliancesSectionSchema>;
+export type PlacesSectionData = z.infer<typeof PlacesSectionSchema>;
+export type CustomSectionData = z.infer<typeof CustomSectionSchema>;
+
+export type SectionData = 
+  | WifiSectionData
+  | AccessSectionData
+  | LocationSectionData
+  | HostSectionData
+  | TrashSectionData
+  | Maps360SectionData
+  | WidgetSectionData
+  | EmergencySectionData
+  | AppliancesSectionData
+  | PlacesSectionData
+  | CustomSectionData;
+
+// Section type definitions
+export const SECTION_TYPES = [
+  'WIFI',
+  'ACCESS', 
+  'LOCATION',
+  'HOST',
+  'TRASH',
+  'MAPS360',
+  'WIDGET',
+  'EMERGENCY',
+  'APPLIANCES',
+  'PLACES',
+  'CUSTOM',
+] as const;
+
+export type SectionType = typeof SECTION_TYPES[number];
+
+// Section metadata for UI
+export const SECTION_METADATA = {
+  WIFI: {
+    title: 'WiFi Information',
+    description: 'Network name, password, and connection details',
+    icon: 'Wifi',
+  },
+  ACCESS: {
+    title: 'Access Instructions', 
+    description: 'How to enter the property',
+    icon: 'Key',
+  },
+  LOCATION: {
+    title: 'Location',
+    description: 'Property address and directions',
+    icon: 'MapPin',
+  },
+  HOST: {
+    title: 'Host Information',
+    description: 'Contact details and host notes',
+    icon: 'User',
+  },
+  TRASH: {
+    title: 'Trash & Recycling',
+    description: 'Disposal instructions and schedule',
+    icon: 'Trash2',
+  },
+  MAPS360: {
+    title: '360° Virtual Tour',
+    description: 'Interactive property tour or maps',
+    icon: 'Globe',
+  },
+  WIDGET: {
+    title: 'Booking Widget',
+    description: 'Embedded booking or reservation widget',
+    icon: 'Calendar',
+  },
+  EMERGENCY: {
+    title: 'Emergency Contacts',
+    description: 'Important contact numbers',
+    icon: 'Phone',
+  },
+  APPLIANCES: {
+    title: 'Appliances',
+    description: 'Instructions for property appliances',
+    icon: 'Zap',
+  },
+  PLACES: {
+    title: 'Places of Interest',
+    description: 'Nearby attractions and recommendations',
+    icon: 'MapPin',
+  },
+  CUSTOM: {
+    title: 'Sección Personalizada',
+    description: 'Piscina, Jacuzzi, Carro, o cualquier información adicional (se puede agregar múltiples veces)',
+    icon: 'FileText',
+  },
+} as const;
+
+// Helper function to validate section data
+export function validateSectionData(type: SectionType, data: unknown): SectionData {
+  switch (type) {
+    case 'WIFI':
+      return WifiSectionSchema.parse(data);
+    case 'ACCESS':
+      return AccessSectionSchema.parse(data);
+    case 'LOCATION':
+      return LocationSectionSchema.parse(data);
+    case 'HOST':
+      return HostSectionSchema.parse(data);
+    case 'TRASH':
+      return TrashSectionSchema.parse(data);
+    case 'MAPS360':
+      return Maps360SectionSchema.parse(data);
+    case 'WIDGET':
+      return WidgetSectionSchema.parse(data);
+    case 'EMERGENCY':
+      return EmergencySectionSchema.parse(data);
+    case 'APPLIANCES':
+      return AppliancesSectionSchema.parse(data);
+    case 'PLACES':
+      return PlacesSectionSchema.parse(data);
+    case 'CUSTOM':
+      return CustomSectionSchema.parse(data);
+    default:
+      throw new Error(`Unknown section type: ${type}`);
+  }
+}
+
+// Helper function to check if section has data
+export function sectionHasData(type: SectionType, data: unknown): boolean {
+  try {
+    validateSectionData(type, data);
+    
+    // Additional checks for sections that might be empty despite validation
+    if (type === 'EMERGENCY') {
+      const emergencyData = data as EmergencySectionData;
+      return emergencyData.contacts.length > 0;
+    }
+    
+    if (type === 'APPLIANCES') {
+      const appliancesData = data as AppliancesSectionData;
+      return appliancesData.items.length > 0;
+    }
+    
+    if (type === 'PLACES') {
+      const placesData = data as PlacesSectionData;
+      return placesData.places.length > 0;
+    }
+    
+    return true;
+  } catch {
+    return false;
+  }
+}

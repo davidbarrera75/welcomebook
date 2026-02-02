@@ -1,0 +1,203 @@
+import { NextRequest, NextResponse } from 'next/server';
+import Anthropic from '@anthropic-ai/sdk';
+import mammoth from 'mammoth';
+
+// Parse PDF buffer using pdf-parse v2
+async function parsePdfBuffer(buffer: Buffer): Promise<string> {
+  const { PDFParse } = await import("pdf-parse");
+  const parser = new PDFParse({ data: buffer });
+  const result = await parser.getText();
+  return result.text;
+}
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || '',
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+
+    if (!file) {
+      return NextResponse.json(
+        { error: 'No se proporcionó ningún archivo' },
+        { status: 400 }
+      );
+    }
+
+    // Extract text from document
+    let extractedText = '';
+    const fileBuffer = Buffer.from(await file.arrayBuffer());
+    const fileName = file.name.toLowerCase();
+
+    if (fileName.endsWith('.docx') || fileName.endsWith('.doc')) {
+      const result = await mammoth.extractRawText({ buffer: fileBuffer });
+      extractedText = result.value;
+    } else if (fileName.endsWith('.txt')) {
+      extractedText = fileBuffer.toString('utf-8');
+    } else if (fileName.endsWith('.pdf')) {
+      try {
+        extractedText = await parsePdfBuffer(fileBuffer);
+      } catch (pdfError) {
+        console.error('Error parsing PDF:', pdfError);
+        return NextResponse.json(
+          { error: 'Error al leer el PDF. Asegúrate de que no esté protegido o que contenga texto seleccionable.' },
+          { status: 400 }
+        );
+      }
+    } else {
+      return NextResponse.json(
+        { error: 'Formato de archivo no soportado. Use .docx, .pdf o .txt' },
+        { status: 400 }
+      );
+    }
+
+    if (!extractedText || extractedText.trim().length === 0) {
+      return NextResponse.json(
+        { error: 'No se pudo extraer texto del documento' },
+        { status: 400 }
+      );
+    }
+
+    // Call Claude API to structure the data
+    const prompt = `Eres un asistente experto en extraer información de documentos de propiedades de alquiler vacacional (Airbnb, VRBO, etc).
+
+Analiza el siguiente texto y extrae TODA la información relevante para crear un welcomebook digital.
+
+**SECCIONES DISPONIBLES (usa solo las que encuentres información):**
+
+1. **WIFI** - Red WiFi
+   - networkName (REQUERIDO): nombre exacto de la red
+   - password (REQUERIDO): contraseña exacta
+   - notes (opcional): instrucciones adicionales
+
+2. **ACCESS** - Cómo entrar a la propiedad
+   - title (REQUERIDO): "Instrucciones de Acceso" o similar
+   - instructions (REQUERIDO): código de caja de llaves, código de puerta, dónde están las llaves, etc.
+
+3. **LOCATION** - Dirección y cómo llegar
+   - address (REQUERIDO): dirección completa
+   - instructions (opcional): indicaciones para llegar, referencias
+
+4. **HOST** - Información del anfitrión
+   - name (REQUERIDO): nombre del anfitrión
+   - phone (opcional): teléfono
+   - email (opcional): email
+   - notes (opcional): horarios de contacto, idiomas, etc.
+
+5. **EMERGENCY** - Contactos de emergencia
+   - contacts (REQUERIDO, array): lista de contactos
+     - id: genera un ID único (ej: "1", "2", "3")
+     - name (REQUERIDO): nombre o tipo (Policía, Hospital, etc.)
+     - phone (REQUERIDO): número de teléfono
+
+6. **TRASH** - Basura y reciclaje
+   - instructions (REQUERIDO): qué hacer con la basura
+   - schedule (opcional): días de recolección
+
+7. **APPLIANCES** - Electrodomésticos e instrucciones
+   - items (REQUERIDO, array): lista de electrodomésticos
+     - id: genera un ID único
+     - name (REQUERIDO): nombre del electrodoméstico
+     - instructions (REQUERIDO): cómo usarlo
+
+8. **CUSTOM** - Información adicional que no encaje en otras categorías
+   - title (REQUERIDO): título descriptivo
+   - content (REQUERIDO): contenido
+
+**REGLAS IMPORTANTES:**
+- SOLO incluye secciones para las que encuentres información REAL en el texto
+- NO inventes datos - si no está en el texto, no lo incluyas
+- Extrae el nombre de la propiedad si lo encuentras (Cabaña X, Casa X, Apartamento X, etc.)
+- Si no encuentras nombre de propiedad, usa "Mi Propiedad"
+- Los campos marcados como REQUERIDO deben estar presentes si incluyes esa sección
+- Para IDs, usa strings simples como "1", "2", "3"
+
+**FORMATO DE RESPUESTA (JSON válido):**
+{
+  "propertyName": "Nombre de la propiedad",
+  "sections": [
+    {
+      "type": "WIFI",
+      "data": {
+        "networkName": "NombreRed",
+        "password": "contraseña123",
+        "notes": "Conectarse desde cualquier habitación"
+      }
+    }
+  ]
+}
+
+**TEXTO DEL DOCUMENTO:**
+${extractedText}
+
+Responde ÚNICAMENTE con el JSON, sin texto adicional, sin markdown, sin \`\`\`.`;
+
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4000,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+    });
+
+    // Extract JSON from response
+    const responseText = message.content[0].type === 'text'
+      ? message.content[0].text
+      : '';
+
+    // Try to parse JSON from response
+    let jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error('Claude response:', responseText);
+      return NextResponse.json(
+        { error: 'No se pudo extraer información estructurada del documento. Intenta con un documento más detallado.' },
+        { status: 500 }
+      );
+    }
+
+    let extractedData;
+    try {
+      extractedData = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError, 'Response:', jsonMatch[0]);
+      return NextResponse.json(
+        { error: 'Error al procesar la respuesta de IA. Intenta de nuevo.' },
+        { status: 500 }
+      );
+    }
+
+    // Validate minimum structure
+    if (!extractedData.propertyName) {
+      extractedData.propertyName = 'Mi Propiedad';
+    }
+    if (!extractedData.sections || !Array.isArray(extractedData.sections)) {
+      extractedData.sections = [];
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: extractedData,
+      originalText: extractedText.substring(0, 500) + (extractedText.length > 500 ? '...' : ''),
+    });
+  } catch (error: any) {
+    console.error('Error en extracción:', error);
+
+    // More specific error messages
+    if (error.message?.includes('API key')) {
+      return NextResponse.json(
+        { error: 'Error de configuración del servidor. Contacta al administrador.' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: error.message || 'Error al procesar el documento' },
+      { status: 500 }
+    );
+  }
+}

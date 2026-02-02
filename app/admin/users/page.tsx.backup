@@ -1,0 +1,399 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, Users, Shield, UserX, CheckCircle, XCircle, Trash2, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+
+interface User {
+  id: string;
+  name: string | null;
+  email: string;
+  role: 'SUPER_ADMIN' | 'ADMIN' | 'USER';
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  _count: {
+    welcomebooks: number;
+  };
+}
+
+export default function UsersManagementPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    } else if (status === 'authenticated') {
+      fetchUsers();
+    }
+  }, [status, router]);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const response = await fetch('/api/users');
+
+      if (response.status === 403) {
+        setError('Acceso denegado. Solo SUPER_ADMIN puede gestionar usuarios.');
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('Error al cargar usuarios');
+      }
+
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setError('Error al cargar los usuarios');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleUserActive = async (userId: string, currentStatus: boolean) => {
+    try {
+      setActionLoading(userId);
+      setError('');
+
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: !currentStatus }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Error al actualizar usuario');
+        return;
+      }
+
+      // Update local state
+      setUsers(users.map(user =>
+        user.id === userId ? { ...user, isActive: !currentStatus } : user
+      ));
+    } catch (error) {
+      console.error('Error toggling user status:', error);
+      setError('Error al actualizar el estado del usuario');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const changeUserRole = async (userId: string, newRole: string) => {
+    try {
+      setActionLoading(userId);
+      setError('');
+
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Error al cambiar rol');
+        return;
+      }
+
+      // Update local state
+      setUsers(users.map(user =>
+        user.id === userId ? { ...user, role: newRole as any } : user
+      ));
+    } catch (error) {
+      console.error('Error changing user role:', error);
+      setError('Error al cambiar el rol del usuario');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const confirmDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setDeleteDialogOpen(true);
+  };
+
+  const deleteUser = async () => {
+    if (!userToDelete) return;
+
+    try {
+      setActionLoading(userToDelete.id);
+      setError('');
+
+      const response = await fetch(`/api/users/${userToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Error al eliminar usuario');
+        return;
+      }
+
+      // Remove from local state
+      setUsers(users.filter(user => user.id !== userToDelete.id));
+      setDeleteDialogOpen(false);
+      setUserToDelete(null);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      setError('Error al eliminar el usuario');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const getRoleBadge = (role: string) => {
+    const variants: Record<string, { variant: any; icon: any }> = {
+      SUPER_ADMIN: { variant: 'destructive', icon: Shield },
+      ADMIN: { variant: 'default', icon: Shield },
+      USER: { variant: 'secondary', icon: Users },
+    };
+
+    const config = variants[role] || variants.USER;
+    const Icon = config.icon;
+
+    return (
+      <Badge variant={config.variant} className="flex items-center gap-1 w-fit">
+        <Icon className="w-3 h-3" />
+        {role}
+      </Badge>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href="/admin">
+              <Button variant="outline" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Volver al Admin
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+                <Users className="w-8 h-8" />
+                Gestión de Usuarios
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Administra usuarios, roles y permisos
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Usuarios Registrados</CardTitle>
+            <CardDescription>
+              Total de usuarios: {users.length}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {users.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-gray-600">No hay usuarios registrados</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Usuario</TableHead>
+                      <TableHead>Rol</TableHead>
+                      <TableHead>Estado</TableHead>
+                      <TableHead>Welcomebooks</TableHead>
+                      <TableHead>Fecha Registro</TableHead>
+                      <TableHead className="text-right">Acciones</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{user.name || 'Sin nombre'}</div>
+                            <div className="text-sm text-gray-500">{user.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            value={user.role}
+                            onValueChange={(value) => changeUserRole(user.id, value)}
+                            disabled={actionLoading === user.id || user.role === 'SUPER_ADMIN'}
+                          >
+                            <SelectTrigger className="w-[140px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="USER">USER</SelectItem>
+                              <SelectItem value="ADMIN">ADMIN</SelectItem>
+                              <SelectItem value="SUPER_ADMIN" disabled>SUPER_ADMIN</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={user.isActive ? 'default' : 'secondary'}
+                            className="flex items-center gap-1 w-fit"
+                          >
+                            {user.isActive ? (
+                              <>
+                                <CheckCircle className="w-3 h-3" />
+                                Activo
+                              </>
+                            ) : (
+                              <>
+                                <XCircle className="w-3 h-3" />
+                                Inactivo
+                              </>
+                            )}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {user._count.welcomebooks}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-600">
+                          {new Date(user.createdAt).toLocaleDateString('es-ES')}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              variant={user.isActive ? 'outline' : 'default'}
+                              size="sm"
+                              onClick={() => toggleUserActive(user.id, user.isActive)}
+                              disabled={actionLoading === user.id || user.role === 'SUPER_ADMIN'}
+                            >
+                              {actionLoading === user.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : user.isActive ? (
+                                <>
+                                  <UserX className="w-4 h-4 mr-1" />
+                                  Desactivar
+                                </>
+                              ) : (
+                                <>
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  Activar
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => confirmDeleteUser(user)}
+                              disabled={actionLoading === user.id || user.role === 'SUPER_ADMIN'}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Eliminar usuario?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Estás a punto de eliminar a <strong>{userToDelete?.email}</strong>.
+                <br /><br />
+                Esta acción eliminará:
+                <ul className="list-disc list-inside mt-2">
+                  <li>{userToDelete?._count.welcomebooks || 0} welcomebook(s)</li>
+                  <li>Todas las secciones asociadas</li>
+                  <li>Todos los archivos multimedia</li>
+                </ul>
+                <br />
+                <strong className="text-red-600">Esta acción no se puede deshacer.</strong>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={deleteUser}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {actionLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  'Eliminar'
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </div>
+  );
+}

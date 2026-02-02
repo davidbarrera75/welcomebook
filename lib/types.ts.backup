@@ -1,0 +1,40 @@
+
+// Extend existing types.ts with proper type definitions
+
+export interface WelcomebookWithSections {
+  id: string;
+  propertyName: string;
+  slug: string;
+  createdAt: Date;
+  updatedAt: Date;
+  sections: SectionWithMedia[];
+}
+
+export interface SectionWithMedia {
+  id: string;
+  type: string;
+  data: any;
+  order: number;
+  media: MediaFile[];
+}
+
+export interface MediaFile {
+  id: string;
+  type: string;
+  url: string;
+  filename: string;
+}
+
+// Helper function to transform Prisma types to component types
+export function transformWelcomebook(prismaWelcomebook: any): WelcomebookWithSections {
+  return {
+    ...prismaWelcomebook,
+    sections: prismaWelcomebook.sections?.map((section: any) => ({
+      ...section,
+      media: section.media?.map((media: any) => ({
+        ...media,
+        filename: media.filename || '',
+      })) || [],
+    })) || [],
+  };
+}
