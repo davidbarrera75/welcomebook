@@ -17,7 +17,6 @@ import { SECTION_METADATA, SECTION_TYPES } from '@/lib/section-types';
 import { SectionWithMedia } from '@/lib/types';
 import {
   Plus,
-  GripVertical,
   Edit3,
   Trash2,
   Wifi,
@@ -32,6 +31,8 @@ import {
   FileText,
   Code,
   ExternalLink,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 
 const SECTION_ICONS = {
@@ -167,6 +168,46 @@ export function SectionManager({ welcomebookId, sections: initialSections, slug 
     ));
   };
 
+  const moveSection = async (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+
+    // Validar límites
+    if (newIndex < 0 || newIndex >= sections.length) return;
+
+    const newSections = [...sections];
+    const [movedSection] = newSections.splice(index, 1);
+    newSections.splice(newIndex, 0, movedSection);
+
+    // Actualizar orden local inmediatamente para mejor UX
+    setSections(newSections);
+
+    try {
+      // Actualizar el orden en la base de datos para ambas secciones
+      const updates = newSections.map((section, idx) =>
+        fetch(`/api/sections/${section.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order: idx }),
+        })
+      );
+
+      await Promise.all(updates);
+
+      toast({
+        title: 'Éxito',
+        description: 'Orden actualizado',
+      });
+    } catch (error) {
+      // Revertir en caso de error
+      setSections(sections);
+      toast({
+        title: 'Error',
+        description: 'No se pudo cambiar el orden',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className="space-y-4 md:space-y-6">
       {/* Add New Section - Mejorado para móvil */}
@@ -222,7 +263,7 @@ export function SectionManager({ welcomebookId, sections: initialSections, slug 
 
       {/* Existing Sections - Mejorado para móvil */}
       <div className="space-y-3 md:space-y-4">
-        {sections.map((section) => {
+        {sections.map((section, index) => {
           const metadata = SECTION_METADATA[section.type as keyof typeof SECTION_METADATA];
           const Icon = SECTION_ICONS[section.type as keyof typeof SECTION_ICONS];
           const hasData = Object.keys(section.data || {}).length > 0;
@@ -233,7 +274,27 @@ export function SectionManager({ welcomebookId, sections: initialSections, slug 
                 {/* Desktop Layout */}
                 <div className="hidden md:flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <GripVertical className="h-5 w-5 text-gray-400" />
+                    {/* Botones de mover */}
+                    <div className="flex flex-col">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => moveSection(index, 'up')}
+                        disabled={index === 0}
+                        className="h-6 w-6 p-0 hover:bg-gray-100"
+                      >
+                        <ChevronUp className="h-4 w-4 text-gray-500" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => moveSection(index, 'down')}
+                        disabled={index === sections.length - 1}
+                        className="h-6 w-6 p-0 hover:bg-gray-100"
+                      >
+                        <ChevronDown className="h-4 w-4 text-gray-500" />
+                      </Button>
+                    </div>
                     <Icon className="h-5 w-5 text-blue-600" />
                     <div>
                       <CardTitle className="text-lg">{metadata?.title}</CardTitle>
@@ -271,7 +332,28 @@ export function SectionManager({ welcomebookId, sections: initialSections, slug 
                 {/* Mobile Layout - Completamente rediseñado */}
                 <div className="md:hidden space-y-3">
                   {/* Título y descripción */}
-                  <div className="flex items-start space-x-3">
+                  <div className="flex items-start space-x-2">
+                    {/* Botones de mover en móvil */}
+                    <div className="flex flex-col flex-shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => moveSection(index, 'up')}
+                        disabled={index === 0}
+                        className="h-5 w-5 p-0"
+                      >
+                        <ChevronUp className="h-3.5 w-3.5 text-gray-500" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => moveSection(index, 'down')}
+                        disabled={index === sections.length - 1}
+                        className="h-5 w-5 p-0"
+                      >
+                        <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+                      </Button>
+                    </div>
                     <Icon className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <CardTitle className="text-base leading-tight">{metadata?.title}</CardTitle>
