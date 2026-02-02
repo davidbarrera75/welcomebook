@@ -96,6 +96,12 @@ export const HtmlEmbedSectionSchema = z.object({
   htmlCode: z.string().min(1, "Por favor ingresa el código HTML"),
 });
 
+// Rich Text Section Schema
+export const RichTextSectionSchema = z.object({
+  title: z.string().min(1, "Por favor ingresa un título"),
+  content: z.string().min(1, "Por favor ingresa el contenido"),
+});
+
 // Union type for all section data
 export type WifiSectionData = z.infer<typeof WifiSectionSchema>;
 export type AccessSectionData = z.infer<typeof AccessSectionSchema>;
@@ -109,6 +115,7 @@ export type AppliancesSectionData = z.infer<typeof AppliancesSectionSchema>;
 export type PlacesSectionData = z.infer<typeof PlacesSectionSchema>;
 export type CustomSectionData = z.infer<typeof CustomSectionSchema>;
 export type HtmlEmbedSectionData = z.infer<typeof HtmlEmbedSectionSchema>;
+export type RichTextSectionData = z.infer<typeof RichTextSectionSchema>;
 
 export type SectionData =
   | WifiSectionData
@@ -122,7 +129,8 @@ export type SectionData =
   | AppliancesSectionData
   | PlacesSectionData
   | CustomSectionData
-  | HtmlEmbedSectionData;
+  | HtmlEmbedSectionData
+  | RichTextSectionData;
 
 // Section type definitions
 export const SECTION_TYPES = [
@@ -138,6 +146,7 @@ export const SECTION_TYPES = [
   'PLACES',
   'CUSTOM',
   'HTML_EMBED',
+  'RICH_TEXT',
 ] as const;
 
 export type SectionType = typeof SECTION_TYPES[number];
@@ -204,6 +213,11 @@ export const SECTION_METADATA = {
     description: 'Inserta código HTML completo de forma segura (ideal para welcomebooks generados por IA)',
     icon: 'Code',
   },
+  RICH_TEXT: {
+    title: 'Texto Enriquecido',
+    description: 'Sección con contenido de texto enriquecido',
+    icon: 'FileText',
+  },
 } as const;
 
 // Helper function to validate section data
@@ -233,6 +247,8 @@ export function validateSectionData(type: SectionType, data: unknown): SectionDa
       return CustomSectionSchema.parse(data);
     case 'HTML_EMBED':
       return HtmlEmbedSectionSchema.parse(data);
+    case 'RICH_TEXT':
+      return RichTextSectionSchema.parse(data);
     default:
       throw new Error(`Unknown section type: ${type}`);
   }
