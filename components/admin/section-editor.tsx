@@ -652,6 +652,54 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
     </div>
   );
 
+  const renderRichTextEditor = () => (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="title">Título *</Label>
+        <Input
+          id="title"
+          value={formData.title || ''}
+          onChange={(e) => updateFormData('title', e.target.value)}
+          placeholder="ej: Información importante, Reglas de la casa"
+          className="rounded-lg"
+        />
+      </div>
+      <div>
+        <Label htmlFor="content">Contenido *</Label>
+        <Textarea
+          id="content"
+          value={formData.content || ''}
+          onChange={(e) => updateFormData('content', e.target.value)}
+          placeholder="Escribe el contenido de texto enriquecido..."
+          rows={8}
+          className="rounded-lg"
+        />
+        <p className="text-sm text-gray-500 mt-1">
+          Puedes usar saltos de línea para organizar el contenido.
+        </p>
+      </div>
+    </div>
+  );
+
+  const renderHtmlEmbedEditor = () => (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="htmlCode">Código HTML *</Label>
+        <Textarea
+          id="htmlCode"
+          value={formData.htmlCode || ''}
+          onChange={(e) => updateFormData('htmlCode', e.target.value)}
+          placeholder="Pega aquí el código HTML..."
+          rows={10}
+          className="rounded-lg font-mono text-sm"
+        />
+        <p className="text-sm text-gray-500 mt-1">
+          Pega código HTML completo. Ideal para contenido generado por IA o widgets personalizados.
+        </p>
+      </div>
+    </div>
+  );
+
   // ---------- Renderizador general ----------
   const renderEditor = () => {
     switch (section.type) {
@@ -666,6 +714,8 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
       case 'APPLIANCES': return renderAppliancesEditor();
       case 'PLACES': return renderPlacesEditor();
       case 'CUSTOM': return renderCustomEditor();
+      case 'RICH_TEXT': return renderRichTextEditor();
+      case 'HTML_EMBED': return renderHtmlEmbedEditor();
       default: return <div>Editor no disponible para este tipo de sección</div>;
     }
   };

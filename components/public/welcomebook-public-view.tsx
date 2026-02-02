@@ -399,6 +399,28 @@ export function WelcomebookPublicView({ welcomebook }: WelcomebookPublicViewProp
           </div>
         );
 
+      case 'RICH_TEXT':
+        return (
+          <div className="space-y-4">
+            {data.title && (
+              <h3 className="text-lg font-semibold text-gray-900">{sectionData.title}</h3>
+            )}
+            <div className="prose prose-gray max-w-none">
+              <p className="text-gray-700 whitespace-pre-wrap">{sectionData.content}</p>
+            </div>
+          </div>
+        );
+
+      case 'HTML_EMBED':
+        return (
+          <div className="space-y-4">
+            <div
+              className="prose prose-gray max-w-none"
+              dangerouslySetInnerHTML={{ __html: data.htmlCode || '' }}
+            />
+          </div>
+        );
+
       default:
         return <div>{t.fields.unavailable}</div>;
     }
