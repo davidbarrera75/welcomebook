@@ -170,6 +170,20 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
           placeholder="Indicaciones adicionales para llegar..."
         />
       </div>
+      <div>
+        <Label htmlFor="mapEmbed">Mapa de Google Maps (código iframe)</Label>
+        <Textarea
+          id="mapEmbed"
+          value={formData.mapEmbed || ''}
+          onChange={(e) => updateFormData('mapEmbed', e.target.value)}
+          placeholder='Pega aquí el código iframe de Google Maps. Ejemplo: <iframe src="https://www.google.com/maps/embed?..." ...></iframe>'
+          className="font-mono text-sm"
+          rows={4}
+        />
+        <p className="text-sm text-gray-500 mt-1">
+          Para obtener el código: Google Maps → Compartir → Incorporar un mapa → Copiar HTML
+        </p>
+      </div>
     </div>
   );
   const renderHostEditor = () => (

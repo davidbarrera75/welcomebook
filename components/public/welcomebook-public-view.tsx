@@ -189,6 +189,20 @@ export function WelcomebookPublicView({ welcomebook }: WelcomebookPublicViewProp
                 <p className="text-gray-700 mt-1 whitespace-pre-wrap">{sectionData.instructions}</p>
               </div>
             )}
+            {data.mapEmbed && (
+              <div className="mt-4">
+                <label className="text-sm font-medium text-gray-600 mb-2 block">{language === 'es' ? 'Mapa' : 'Map'}</label>
+                <div
+                  className="w-full rounded-lg overflow-hidden border border-gray-200"
+                  dangerouslySetInnerHTML={{
+                    __html: data.mapEmbed.replace(
+                      /<iframe/g,
+                      '<iframe style="width:100%;height:300px;border:0;"'
+                    )
+                  }}
+                />
+              </div>
+            )}
           </div>
         );
 

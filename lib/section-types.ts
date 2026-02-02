@@ -17,6 +17,7 @@ export const AccessSectionSchema = z.object({
 export const LocationSectionSchema = z.object({
   address: z.string().min(1, "Por favor ingresa la dirección"),
   instructions: z.string().optional(),
+  mapEmbed: z.string().optional(), // Google Maps iframe embed code
 });
 
 // Host Section Schema
