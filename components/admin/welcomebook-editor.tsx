@@ -127,7 +127,7 @@ export function WelcomebookEditor({ welcomebook }: WelcomebookEditorProps) {
                     Fecha de creación
                   </label>
                   <div className="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-lg px-4 py-3">
-                    <p className="text-base font-medium text-gray-900">
+                    <p className="text-base font-medium text-gray-900" suppressHydrationWarning>
                       {new Date(welcomebook.createdAt).toLocaleDateString('es-ES', {
                         year: 'numeric',
                         month: 'long',

@@ -136,7 +136,6 @@ enum SectionType {
   PLACES
   CUSTOM
   HTML_EMBED
-  RICH_TEXT
 }
 
 enum MediaType {

@@ -34,7 +34,6 @@ interface SectionEditorProps {
 export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps) {
   const [formData, setFormData] = useState(section.data || {});
   const [formDataEn, setFormDataEn] = useState(section.dataEn || {});
-  const [editingLanguage, setEditingLanguage] = useState<"es" | "en">("es");
   const [customTitle, setCustomTitle] = useState(section.customTitle || '');
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -43,14 +42,8 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
   const [localMedia, setLocalMedia] = useState(section.media || []);
 
   const updateFormData = (field: string, value: any) => {
-    if (editingLanguage === "en") {
-      setFormDataEn((prev: any) => ({ ...prev, [field]: value }));
-    } else {
-      setFormData((prev: any) => ({ ...prev, [field]: value }));
-    }
+    setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
-
-  const getCurrentFormData = () => editingLanguage === "en" ? formDataEn : formData;
 
   const saveSection = async () => {
     setIsLoading(true);
@@ -109,7 +102,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="networkName">Nombre de la Red *</Label>
         <Input
           id="networkName"
-          value={getCurrentFormData().networkName || ''}
+          value={formData.networkName || ''}
           onChange={(e) => updateFormData('networkName', e.target.value)}
           placeholder="ej: WiFi_Casa"
         />
@@ -118,7 +111,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="password">Contraseña *</Label>
         <Input
           id="password"
-          value={getCurrentFormData().password || ''}
+          value={formData.password || ''}
           onChange={(e) => updateFormData('password', e.target.value)}
           placeholder="ej: contraseña123"
         />
@@ -127,7 +120,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="notes">Notas Adicionales</Label>
         <Textarea
           id="notes"
-          value={getCurrentFormData().notes || ''}
+          value={formData.notes || ''}
           onChange={(e) => updateFormData('notes', e.target.value)}
           placeholder="Si tienes problemas de conexión, reinicia tu dispositivo..."
         />
@@ -140,7 +133,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="title">Título *</Label>
         <Input
           id="title"
-          value={getCurrentFormData().title || ''}
+          value={formData.title || ''}
           onChange={(e) => updateFormData('title', e.target.value)}
           placeholder="ej: Instrucciones de Acceso"
         />
@@ -149,7 +142,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="instructions">Instrucciones *</Label>
         <Textarea
           id="instructions"
-          value={getCurrentFormData().instructions || ''}
+          value={formData.instructions || ''}
           onChange={(e) => updateFormData('instructions', e.target.value)}
           placeholder="Describe cómo acceder a la propiedad..."
           rows={4}
@@ -163,7 +156,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="address">Dirección *</Label>
         <Input
           id="address"
-          value={getCurrentFormData().address || ''}
+          value={formData.address || ''}
           onChange={(e) => updateFormData('address', e.target.value)}
           placeholder="ej: Calle Principal 123, Ciudad"
         />
@@ -172,7 +165,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="instructions">Indicaciones</Label>
         <Textarea
           id="instructions"
-          value={getCurrentFormData().instructions || ''}
+          value={formData.instructions || ''}
           onChange={(e) => updateFormData('instructions', e.target.value)}
           placeholder="Indicaciones adicionales para llegar..."
         />
@@ -185,7 +178,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="name">Nombre del Anfitrión *</Label>
         <Input
           id="name"
-          value={getCurrentFormData().name || ''}
+          value={formData.name || ''}
           onChange={(e) => updateFormData('name', e.target.value)}
           placeholder="ej: María González"
         />
@@ -194,7 +187,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="phone">Teléfono</Label>
         <Input
           id="phone"
-          value={getCurrentFormData().phone || ''}
+          value={formData.phone || ''}
           onChange={(e) => updateFormData('phone', e.target.value)}
           placeholder="ej: +57 301 234 5678"
         />
@@ -204,7 +197,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Input
           id="email"
           type="email"
-          value={getCurrentFormData().email || ''}
+          value={formData.email || ''}
           onChange={(e) => updateFormData('email', e.target.value)}
           placeholder="ej: maria@ejemplo.com"
         />
@@ -213,7 +206,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="notes">Notas</Label>
         <Textarea
           id="notes"
-          value={getCurrentFormData().notes || ''}
+          value={formData.notes || ''}
           onChange={(e) => updateFormData('notes', e.target.value)}
           placeholder="Información adicional sobre horarios de contacto..."
         />
@@ -226,7 +219,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="instructions">Instrucciones *</Label>
         <Textarea
           id="instructions"
-          value={getCurrentFormData().instructions || ''}
+          value={formData.instructions || ''}
           onChange={(e) => updateFormData('instructions', e.target.value)}
           placeholder="Describe dónde y cómo desechar la basura..."
           rows={4}
@@ -236,7 +229,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="schedule">Horario de Recolección</Label>
         <Input
           id="schedule"
-          value={getCurrentFormData().schedule || ''}
+          value={formData.schedule || ''}
           onChange={(e) => updateFormData('schedule', e.target.value)}
           placeholder="ej: Lunes, Miércoles y Viernes a las 7:00 AM"
         />
@@ -249,7 +242,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="title">Título *</Label>
         <Input
           id="title"
-          value={getCurrentFormData().title || ''}
+          value={formData.title || ''}
           onChange={(e) => updateFormData('title', e.target.value)}
           placeholder="ej: Tour Virtual 360°"
         />
@@ -259,7 +252,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Input
           id="embedUrl"
           type="url"
-          value={getCurrentFormData().embedUrl || ''}
+          value={formData.embedUrl || ''}
           onChange={(e) => updateFormData('embedUrl', e.target.value)}
           placeholder="ej: https://www.google.com/maps/embed?pb=..."
         />
@@ -275,7 +268,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="title">Título *</Label>
         <Input
           id="title"
-          value={getCurrentFormData().title || ''}
+          value={formData.title || ''}
           onChange={(e) => updateFormData('title', e.target.value)}
           placeholder="ej: Reserva tu próxima estadía"
         />
@@ -284,7 +277,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="htmlCode">Código HTML del Widget *</Label>
         <Textarea
           id="htmlCode"
-          value={getCurrentFormData().htmlCode || ''}
+          value={formData.htmlCode || ''}
           onChange={(e) => updateFormData('htmlCode', e.target.value)}
           placeholder='<iframe src="..." width="100%" height="400"></iframe>'
           rows={6}
@@ -296,7 +289,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
     </div>
   );
   const renderEmergencyEditor = () => {
-    const contacts = getCurrentFormData().contacts || [];
+    const contacts = formData.contacts || [];
     const addContact = () => {
       const newContact = { id: Date.now().toString(), name: '', phone: '' };
       updateFormData('contacts', [...contacts, newContact]);
@@ -364,7 +357,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
     );
   };
   const renderAppliancesEditor = () => {
-    const items = getCurrentFormData().items || [];
+    const items = formData.items || [];
     const addItem = () => {
       const newItem = { id: Date.now().toString(), name: '', instructions: '', mediaUrls: [] };
       updateFormData('items', [...items, newItem]);
@@ -433,7 +426,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
     );
   };
   const renderPlacesEditor = () => {
-    const places = getCurrentFormData().places || [];
+    const places = formData.places || [];
     const addPlace = () => {
       const newPlace = { id: Date.now().toString(), name: '', category: '', address: '', notes: '', mediaUrls: [] };
       updateFormData('places', [...places, newPlace]);
@@ -570,7 +563,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="title">Título *</Label>
         <Input
           id="title"
-          value={getCurrentFormData().title || ''}
+          value={formData.title || ''}
           onChange={(e) => updateFormData('title', e.target.value)}
           placeholder="ej: Piscina, Jacuzzi, Instrucciones del Carro"
           className="rounded-lg"
@@ -580,7 +573,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <Label htmlFor="content">Contenido *</Label>
         <Textarea
           id="content"
-          value={getCurrentFormData().content || ''}
+          value={formData.content || ''}
           onChange={(e) => updateFormData('content', e.target.value)}
           placeholder="Escribe el contenido personalizado..."
           rows={6}
@@ -681,28 +674,6 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         <p className="text-sm text-gray-600 mt-1">
           Si lo dejas vacío, se usará el título por defecto según el tipo de sección.
         </p>
-      </div>
-      {/* Language Tabs */}
-      <div className="flex gap-2 mb-4 p-2 bg-gray-100 rounded-lg">
-        <Button
-          variant={editingLanguage === "es" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setEditingLanguage("es")}
-          className={editingLanguage === "es" ? "bg-blue-600 text-white" : ""}
-        >
-          ES
-        </Button>
-        <Button
-          variant={editingLanguage === "en" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setEditingLanguage("en")}
-          className={editingLanguage === "en" ? "bg-blue-600 text-white" : ""}
-        >
-          EN
-        </Button>
-        <span className="text-sm text-gray-500 ml-2 self-center">
-          {editingLanguage === "es" ? "Editando en Espanol" : "Editing in English"}
-        </span>
       </div>
       {renderEditor()}
       <div className="flex justify-end space-x-4 pt-4 border-t">

@@ -1,0 +1,296 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Plantilla Welcomebook</title>
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+</w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+body {
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    margin: 40px;
+}
+h1 {
+    color: #2563eb;
+    font-size: 24pt;
+    text-align: center;
+    margin-bottom: 30px;
+}
+h2 {
+    color: #1e40af;
+    font-size: 14pt;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 5px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+.field {
+    margin-bottom: 15px;
+}
+.field-label {
+    font-weight: bold;
+    color: #374151;
+}
+.field-input {
+    border-bottom: 1px solid #9ca3af;
+    min-height: 20px;
+    padding: 5px 0;
+    color: #6b7280;
+}
+.field-textarea {
+    border: 1px solid #d1d5db;
+    min-height: 60px;
+    padding: 10px;
+    margin-top: 5px;
+}
+.note {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 10px 15px;
+    margin: 20px 0;
+    font-size: 10pt;
+}
+.header-note {
+    text-align: center;
+    color: #6b7280;
+    font-size: 10pt;
+    margin-bottom: 30px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+td {
+    padding: 8px;
+    border: 1px solid #d1d5db;
+}
+.item-row td:first-child {
+    width: 30%;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h1>WELCOMEBOOK</h1>
+
+<div class="header-note">
+Complete esta plantilla con la información de su propiedad.<br>
+Una vez completada, súbala a la plataforma para crear su welcomebook automáticamente.
+</div>
+
+<div class="field">
+    <div class="field-label">Nombre de la Propiedad:</div>
+    <div class="field-input">[Escriba aquí el nombre: Cabaña del Bosque, Casa Playa Azul, Apartamento Centro, etc.]</div>
+</div>
+
+<!-- WIFI -->
+<h2>WIFI</h2>
+
+<div class="field">
+    <div class="field-label">Nombre de la Red (SSID):</div>
+    <div class="field-input">[Nombre exacto de la red WiFi]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Contraseña:</div>
+    <div class="field-input">[Contraseña exacta, respetando mayúsculas y minúsculas]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Notas adicionales (opcional):</div>
+    <div class="field-textarea">[Ej: El router está en la sala. Si hay problemas, reiniciar el módem.]</div>
+</div>
+
+<!-- ACCESO -->
+<h2>INSTRUCCIONES DE ACCESO</h2>
+
+<div class="field">
+    <div class="field-label">¿Cómo entrar a la propiedad?</div>
+    <div class="field-textarea">[Describa paso a paso cómo acceder. Incluya códigos de caja de llaves, códigos de puerta, ubicación de llaves, etc.]</div>
+</div>
+
+<!-- UBICACIÓN -->
+<h2>UBICACIÓN</h2>
+
+<div class="field">
+    <div class="field-label">Dirección completa:</div>
+    <div class="field-input">[Calle, número, ciudad, código postal, país]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Indicaciones para llegar (opcional):</div>
+    <div class="field-textarea">[Puntos de referencia, cómo llegar desde el aeropuerto, estación de bus, etc.]</div>
+</div>
+
+<!-- ANFITRIÓN -->
+<h2>INFORMACIÓN DEL ANFITRIÓN</h2>
+
+<div class="field">
+    <div class="field-label">Nombre del anfitrión:</div>
+    <div class="field-input">[Su nombre o nombre de contacto]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Teléfono:</div>
+    <div class="field-input">[Incluya código de país, ej: +57 300 123 4567]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Email:</div>
+    <div class="field-input">[correo@ejemplo.com]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Horarios de contacto / Notas:</div>
+    <div class="field-textarea">[Ej: Disponible de 8am a 10pm. Hablo español e inglés.]</div>
+</div>
+
+<!-- EMERGENCIAS -->
+<h2>CONTACTOS DE EMERGENCIA</h2>
+
+<table>
+    <tr class="item-row">
+        <td>Policía:</td>
+        <td>[Número de teléfono]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Ambulancia:</td>
+        <td>[Número de teléfono]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Bomberos:</td>
+        <td>[Número de teléfono]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Hospital más cercano:</td>
+        <td>[Nombre y teléfono]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Otro contacto:</td>
+        <td>[Nombre y teléfono]</td>
+    </tr>
+</table>
+
+<!-- BASURA -->
+<h2>BASURA Y RECICLAJE</h2>
+
+<div class="field">
+    <div class="field-label">Instrucciones:</div>
+    <div class="field-textarea">[¿Dónde dejar la basura? ¿Cómo separar reciclaje? ¿Hay contenedores específicos?]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Días de recolección (opcional):</div>
+    <div class="field-input">[Ej: Lunes, miércoles y viernes por la mañana]</div>
+</div>
+
+<!-- ELECTRODOMÉSTICOS -->
+<h2>ELECTRODOMÉSTICOS</h2>
+
+<div class="note">
+Agregue cada electrodoméstico que requiera instrucciones especiales. Copie y pegue más filas si necesita agregar más.
+</div>
+
+<table>
+    <tr class="item-row">
+        <td>Lavadora:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Secadora:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Lavavajillas:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Horno:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Microondas:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Aire acondicionado:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Televisor / Smart TV:</td>
+        <td>[Instrucciones de uso, contraseñas de streaming]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Calentador de agua:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Otro:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+    <tr class="item-row">
+        <td>Otro:</td>
+        <td>[Instrucciones de uso]</td>
+    </tr>
+</table>
+
+<!-- INFORMACIÓN ADICIONAL -->
+<h2>INFORMACIÓN ADICIONAL</h2>
+
+<div class="note">
+Use esta sección para cualquier información extra que quiera compartir con sus huéspedes.
+</div>
+
+<div class="field">
+    <div class="field-label">Piscina (si aplica):</div>
+    <div class="field-textarea">[Horarios, reglas, ubicación de toallas, etc.]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Jacuzzi (si aplica):</div>
+    <div class="field-textarea">[Instrucciones de uso, horarios, etc.]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Estacionamiento:</div>
+    <div class="field-textarea">[Ubicación, instrucciones, número de espacios disponibles]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Reglas de la casa:</div>
+    <div class="field-textarea">[No fumar, no mascotas, hora de silencio, número máximo de huéspedes, etc.]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Hora de check-in:</div>
+    <div class="field-input">[Ej: 3:00 PM]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Hora de check-out:</div>
+    <div class="field-input">[Ej: 11:00 AM]</div>
+</div>
+
+<div class="field">
+    <div class="field-label">Otra información importante:</div>
+    <div class="field-textarea">[Cualquier otra cosa que sus huéspedes deban saber]</div>
+</div>
+
+<br><br>
+<div style="text-align: center; color: #9ca3af; font-size: 10pt; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+Plantilla generada por Welcomebook<br>
+Una vez completada, suba este documento a la plataforma para crear su welcomebook automáticamente.
+</div>
+
+</body>
+</html>

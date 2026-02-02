@@ -32,7 +32,6 @@ import {
   FileText,
   Code,
   ExternalLink,
-  Type,
 } from 'lucide-react';
 
 const SECTION_ICONS = {
@@ -48,7 +47,6 @@ const SECTION_ICONS = {
   PLACES: MapPin,
   CUSTOM: FileText,
   HTML_EMBED: Code,
-  RICH_TEXT: Type,
 };
 
 interface SectionManagerProps {
@@ -187,8 +185,8 @@ export function SectionManager({ welcomebookId, sections: initialSections, slug 
                 </SelectTrigger>
                 <SelectContent>
                   {SECTION_TYPES.filter(type => {
-                    // Allow multiple CUSTOM, HTML_EMBED, and RICH_TEXT sections
-                    if (type === 'CUSTOM' || type === 'HTML_EMBED' || type === 'RICH_TEXT') return true;
+                    // Allow multiple CUSTOM and HTML_EMBED sections
+                    if (type === 'CUSTOM' || type === 'HTML_EMBED') return true;
                     // Only one of each other type
                     return !sections.some(s => s.type === type);
                   }).map(type => {

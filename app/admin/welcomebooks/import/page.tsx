@@ -24,17 +24,20 @@ import {
   Zap,
   FileQuestion,
   Plus,
-  X
+  X,
+  Download
 } from 'lucide-react';
 import Link from 'next/link';
 
 interface ExtractedSection {
   type: string;
   data: any;
+  dataEn?: any;
 }
 
 interface ExtractedData {
   propertyName: string;
+  propertyNameEn?: string;
   sections: ExtractedSection[];
 }
 
@@ -151,6 +154,7 @@ export default function ImportWelcomebookPage() {
             welcomebookId: welcomebook.id,
             type: section.type,
             data: section.data,
+            dataEn: section.dataEn || {},
             order: i,
           }),
         });
@@ -594,6 +598,22 @@ export default function ImportWelcomebookPage() {
                 <strong>Tip:</strong> Asegúrate de que tu documento contenga información como: nombre de la propiedad,
                 WiFi (red y contraseña), instrucciones de acceso, dirección, contacto del anfitrión, etc.
               </p>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <p className="text-sm text-blue-800">
+                  <strong>¿No tienes un documento?</strong> Descarga nuestra plantilla y complétala con la información de tu propiedad.
+                </p>
+              </div>
+              <a
+                href="/plantilla-welcomebook.doc"
+                download="plantilla-welcomebook.doc"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium whitespace-nowrap"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Descargar Plantilla
+              </a>
             </div>
           </CardContent>
         </Card>

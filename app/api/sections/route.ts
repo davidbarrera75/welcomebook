@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { welcomebookId, type, data, order } = await request.json();
+    const { welcomebookId, type, data, dataEn, order } = await request.json();
 
     if (!welcomebookId || !type) {
       return NextResponse.json(
@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
         welcomebookId,
         type: type as SectionType,
         data: data || {},
+        dataEn: dataEn || {},
         order: order || 0,
       },
       include: {

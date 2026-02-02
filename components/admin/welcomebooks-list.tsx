@@ -317,7 +317,7 @@ export function WelcomebooksList() {
                         /{welcomebook.slug}
                       </code>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center" suppressHydrationWarning>
                       <Calendar className="h-4 w-4 mr-1" />
                       {new Date(welcomebook.updatedAt).toLocaleDateString('es-ES')}
                     </div>

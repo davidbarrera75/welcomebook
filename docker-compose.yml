@@ -1,0 +1,51 @@
+services:
+  # Base de datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: welcomebook-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: welcomebook
+      POSTGRES_PASSWORD: welcomebook123
+      POSTGRES_DB: welcomebook
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U welcomebook -d welcomebook"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Aplicación Welcomebook (Desarrollo)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: welcomebook-app
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - DATABASE_URL=postgresql://welcomebook:welcomebook123@db:5432/welcomebook?schema=public
+      - NEXTAUTH_SECRET=tu-secret-super-seguro-cambiar-en-produccion
+      - NEXTAUTH_URL=http://localhost:3001
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "npx prisma migrate deploy && npx prisma generate && npm run dev"
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: welcomebook-network

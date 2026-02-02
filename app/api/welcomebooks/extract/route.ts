@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
     const prompt = `Eres un asistente experto en extraer información de documentos de propiedades de alquiler vacacional (Airbnb, VRBO, etc).
 
 Analiza el siguiente texto y extrae TODA la información relevante para crear un welcomebook digital.
+**IMPORTANTE: Debes generar el contenido en DOS IDIOMAS: español (data) e inglés (dataEn).**
 
 **SECCIONES DISPONIBLES (usa solo las que encuentres información):**
 
@@ -110,13 +111,18 @@ Analiza el siguiente texto y extrae TODA la información relevante para crear un
 - SOLO incluye secciones para las que encuentres información REAL en el texto
 - NO inventes datos - si no está en el texto, no lo incluyas
 - Extrae el nombre de la propiedad si lo encuentras (Cabaña X, Casa X, Apartamento X, etc.)
-- Si no encuentras nombre de propiedad, usa "Mi Propiedad"
+- Si no encuentras nombre de propiedad, usa "Mi Propiedad" / "My Property"
 - Los campos marcados como REQUERIDO deben estar presentes si incluyes esa sección
 - Para IDs, usa strings simples como "1", "2", "3"
+
+**REGLAS DE TRADUCCIÓN (muy importante):**
+- **NO traducir** (mantener idéntico en data y dataEn): networkName, password, phone, email, address
+- **SÍ traducir**: notes, instructions, title, content, nombres de electrodomésticos (name en APPLIANCES), nombres de contactos de emergencia (name en EMERGENCY como "Police", "Hospital")
 
 **FORMATO DE RESPUESTA (JSON válido):**
 {
   "propertyName": "Nombre de la propiedad",
+  "propertyNameEn": "Property Name in English",
   "sections": [
     {
       "type": "WIFI",
@@ -124,6 +130,11 @@ Analiza el siguiente texto y extrae TODA la información relevante para crear un
         "networkName": "NombreRed",
         "password": "contraseña123",
         "notes": "Conectarse desde cualquier habitación"
+      },
+      "dataEn": {
+        "networkName": "NombreRed",
+        "password": "contraseña123",
+        "notes": "Connect from any room"
       }
     }
   ]
@@ -136,7 +147,7 @@ Responde ÚNICAMENTE con el JSON, sin texto adicional, sin markdown, sin \`\`\`.
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 4000,
+      max_tokens: 8000,
       messages: [
         {
           role: 'user',

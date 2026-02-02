@@ -440,7 +440,7 @@ export default function UsersManagementPage() {
                             {user._count.welcomebooks}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-sm text-gray-600">
+                        <TableCell className="text-sm text-gray-600" suppressHydrationWarning>
                           {new Date(user.createdAt).toLocaleDateString('es-ES')}
                         </TableCell>
                         <TableCell className="text-right">
