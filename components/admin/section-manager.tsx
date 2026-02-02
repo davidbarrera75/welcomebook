@@ -47,6 +47,7 @@ const SECTION_ICONS = {
   PLACES: MapPin,
   CUSTOM: FileText,
   HTML_EMBED: Code,
+  RICH_TEXT: FileText,
 };
 
 interface SectionManagerProps {

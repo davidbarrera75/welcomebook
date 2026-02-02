@@ -50,6 +50,7 @@ const SECTION_ICONS: Record<string, any> = {
   TRASH: Trash,
   APPLIANCES: Zap,
   CUSTOM: FileText,
+  RICH_TEXT: FileText,
 };
 
 const SECTION_TITLES: Record<string, string> = {
@@ -61,6 +62,7 @@ const SECTION_TITLES: Record<string, string> = {
   TRASH: 'Basura y Reciclaje',
   APPLIANCES: 'Electrodomésticos',
   CUSTOM: 'Información Adicional',
+  RICH_TEXT: 'Texto Enriquecido',
 };
 
 export default function ImportWelcomebookPage() {

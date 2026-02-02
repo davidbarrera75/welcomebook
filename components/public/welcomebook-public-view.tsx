@@ -16,7 +16,7 @@ import { SECTION_METADATA, sectionHasData } from '@/lib/section-types';
 import { getTranslation, type Language } from '@/lib/translations';
 import {
   Wifi, Key, MapPin, User, Trash, Globe, Calendar, Phone, Zap, FileText,
-  Languages, Copy, Check
+  Languages, Copy, Check, Code
 } from 'lucide-react';
 import { BokunWidget } from '@/components/public/bokun-widget';
 
@@ -32,6 +32,8 @@ const SECTION_ICONS = {
   APPLIANCES: Zap,
   PLACES: MapPin,
   CUSTOM: FileText,
+  HTML_EMBED: Code,
+  RICH_TEXT: FileText,
 };
 
 interface WelcomebookPublicViewProps {
