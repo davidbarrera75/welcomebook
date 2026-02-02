@@ -14,6 +14,7 @@ export interface SectionWithMedia {
   id: string;
   type: string;
   customTitle?: string | null;
+  customTitleEn?: string | null;
   data: any;
   dataEn?: any;
   order: number;

@@ -35,6 +35,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
   const [formData, setFormData] = useState(section.data || {});
   const [formDataEn, setFormDataEn] = useState(section.dataEn || {});
   const [customTitle, setCustomTitle] = useState(section.customTitle || '');
+  const [customTitleEn, setCustomTitleEn] = useState(section.customTitleEn || '');
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
@@ -58,6 +59,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
           data: formData,
           dataEn: formDataEn,
           customTitle: customTitle.trim() || null,
+          customTitleEn: customTitleEn.trim() || null,
         }),
       });
 
@@ -727,16 +729,28 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
           Completa la información de esta sección. Los campos marcados con * son obligatorios.
         </p>
       </div>
-      <div className="border-b pb-4">
-        <Label htmlFor="customTitle">Título Personalizado de la Sección (opcional)</Label>
-        <Input
-          id="customTitle"
-          value={customTitle}
-          onChange={(e) => setCustomTitle(e.target.value)}
-          placeholder="Ej: Instrucciones para usar la lavadora, Cómo llegar al apartamento, etc."
-          className="mt-2 rounded-lg"
-        />
-        <p className="text-sm text-gray-600 mt-1">
+      <div className="border-b pb-4 space-y-4">
+        <div>
+          <Label htmlFor="customTitle">Título Personalizado de la Sección - Español (opcional)</Label>
+          <Input
+            id="customTitle"
+            value={customTitle}
+            onChange={(e) => setCustomTitle(e.target.value)}
+            placeholder="Ej: Instrucciones para usar la lavadora, Cómo llegar al apartamento, etc."
+            className="mt-2 rounded-lg"
+          />
+        </div>
+        <div>
+          <Label htmlFor="customTitleEn">Título Personalizado - Inglés (opcional)</Label>
+          <Input
+            id="customTitleEn"
+            value={customTitleEn}
+            onChange={(e) => setCustomTitleEn(e.target.value)}
+            placeholder="Ex: Instructions for using the washing machine, How to get to the apartment, etc."
+            className="mt-2 rounded-lg"
+          />
+        </div>
+        <p className="text-sm text-gray-600">
           Si lo dejas vacío, se usará el título por defecto según el tipo de sección.
         </p>
       </div>

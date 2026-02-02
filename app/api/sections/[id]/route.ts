@@ -47,7 +47,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data, dataEn, order, customTitle } = await request.json();
+    const { data, dataEn, order, customTitle, customTitleEn } = await request.json();
 
     const existingSection = await prisma.section.findUnique({
       where: { id: params.id }
@@ -77,6 +77,7 @@ export async function PUT(
     if (dataEn !== undefined) updateData.dataEn = dataEn;
     if (order !== undefined) updateData.order = order;
     if (customTitle !== undefined) updateData.customTitle = customTitle;
+    if (customTitleEn !== undefined) updateData.customTitleEn = customTitleEn;
 
     const section = await prisma.section.update({
       where: { id: params.id },

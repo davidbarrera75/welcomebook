@@ -62,11 +62,14 @@ export function WelcomebookPublicView({ welcomebook }: WelcomebookPublicViewProp
   };
 
   const getSectionTitle = (section: any) => {
-    // Use custom title if provided
+    // Use custom title if provided (check language-specific first)
+    if (language === 'en' && section.customTitleEn && section.customTitleEn.trim()) {
+      return section.customTitleEn;
+    }
     if (section.customTitle && section.customTitle.trim()) {
       return section.customTitle;
     }
-    
+
     // Otherwise use default translation
     const titles: Record<string, string> = {
       'WIFI': t.sections.wifi,

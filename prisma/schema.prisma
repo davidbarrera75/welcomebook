@@ -90,6 +90,7 @@ model Section {
   welcomebookId String
   type          SectionType
   customTitle   String?
+  customTitleEn String?
   data          Json        @default("{}")
   dataEn        Json        @default("{}")  
   order         Int         @default(0)
