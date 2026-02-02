@@ -264,16 +264,38 @@ export function WelcomebookPublicView({ welcomebook }: WelcomebookPublicViewProp
         );
 
       case 'MAPS360':
+        // Soporta tanto embedCode (nuevo) como embedUrl (legacy)
+        const embedContent = data.embedCode || data.embedUrl;
+        if (!embedContent) return null;
+
+        // Si es un iframe completo, renderizar directamente
+        if (embedContent.includes('<iframe')) {
+          return (
+            <div className="space-y-4">
+              <div
+                className="aspect-video rounded-lg overflow-hidden"
+                dangerouslySetInnerHTML={{
+                  __html: embedContent.replace(
+                    /<iframe/g,
+                    '<iframe style="width:100%;height:100%;border:0;"'
+                  )
+                }}
+              />
+            </div>
+          );
+        }
+
+        // Si es solo una URL (legacy), crear el iframe
         return (
           <div className="space-y-4">
             <div className="aspect-video rounded-lg overflow-hidden">
               <iframe
-                src={sectionData.embedUrl}
+                src={embedContent}
                 width="100%"
                 height="100%"
                 frameBorder="0"
                 allowFullScreen
-                title={sectionData.title}
+                title={sectionData.title || 'Tour Virtual 360°'}
                 className="w-full h-full"
               ></iframe>
             </div>

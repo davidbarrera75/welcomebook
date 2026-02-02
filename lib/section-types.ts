@@ -36,8 +36,9 @@ export const TrashSectionSchema = z.object({
 
 // Maps360 Section Schema
 export const Maps360SectionSchema = z.object({
-  title: z.string().min(1, "Por favor ingresa un título"),
-  embedUrl: z.string().url("Por favor ingresa una URL válida"),
+  title: z.string().optional(),
+  embedUrl: z.string().optional(), // Legacy: solo URL
+  embedCode: z.string().optional(), // Nuevo: iframe completo
 });
 
 // Widget Section Schema
@@ -274,6 +275,11 @@ export function sectionHasData(type: SectionType, data: unknown): boolean {
     if (type === 'PLACES') {
       const placesData = data as PlacesSectionData;
       return placesData.places.length > 0;
+    }
+
+    if (type === 'MAPS360') {
+      const maps360Data = data as Maps360SectionData;
+      return !!(maps360Data.embedCode || maps360Data.embedUrl);
     }
 
     return true;

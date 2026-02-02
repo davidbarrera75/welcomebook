@@ -253,7 +253,7 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
   const renderMaps360Editor = () => (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="title">Título *</Label>
+        <Label htmlFor="title">Título (opcional)</Label>
         <Input
           id="title"
           value={formData.title || ''}
@@ -262,16 +262,17 @@ export function SectionEditor({ section, onUpdate, onClose }: SectionEditorProps
         />
       </div>
       <div>
-        <Label htmlFor="embedUrl">URL del Embed *</Label>
-        <Input
-          id="embedUrl"
-          type="url"
-          value={formData.embedUrl || ''}
-          onChange={(e) => updateFormData('embedUrl', e.target.value)}
-          placeholder="ej: https://www.google.com/maps/embed?pb=..."
+        <Label htmlFor="embedCode">Código del Tour 360° (iframe) *</Label>
+        <Textarea
+          id="embedCode"
+          value={formData.embedCode || formData.embedUrl || ''}
+          onChange={(e) => updateFormData('embedCode', e.target.value)}
+          placeholder='Pega aquí el código iframe completo. Ejemplo: <iframe src="https://www.google.com/maps/embed?..." ...></iframe>'
+          className="font-mono text-sm"
+          rows={4}
         />
-        <p className="text-sm text-gray-600">
-          URL del iframe de Google Maps 360° o similar
+        <p className="text-sm text-gray-500 mt-1">
+          Copia y pega el código iframe completo de Google Maps, Matterport, o cualquier tour virtual 360°.
         </p>
       </div>
     </div>
